@@ -19,7 +19,7 @@ const Dashboard = ({ onLogout, user }) => {
   const [selectedHour, setSelectedHour] = useState(null);
 
   const displayWeather = selectedHour || weatherData;
-  const API_URL = "http://localhost:5000/api/weather";
+  const API_URL = "https://weatherscope-gw2z.onrender.com/api/weather";
 
   // 🔥 Fetch weather data with date/time parameters
   useEffect(() => {
