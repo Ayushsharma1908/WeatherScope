@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   MdWbSunny,
@@ -8,76 +8,203 @@ import {
   MdThunderstorm,
   MdArrowBack,
   MdLogout,
-  MdWbCloudy as MdCloudy,
 } from "react-icons/md";
 import { Wind, Eye, CloudRain, SunDim } from "lucide-react";
 
+// ===========================
+// CONSTANTS
+// ===========================
+const weatherVisuals = {
+  Clear: { image: "/images/clear.jpg", tagline: "A perfect day to shine bright ☀️" },
+  "Clear Night": { image: "/images/clear_night.jpg", tagline: "Starry skies tonight ✨" },
+  Clouds: { image: "/images/cloudy.jpg", tagline: "Soft clouds drifting ☁️" },
+  "Clouds Night": { image: "/images/cloudy_night.jpg", tagline: "Cloudy night sky 🌙" },
+  Rain: { image: "/images/rainy.jpg", tagline: "Raindrops falling gently 🌧️" },
+  "Rain Night": { image: "/images/rainy_night.jpg", tagline: "Rainy night ambience 🌧️✨" },
+  Thunderstorm: { image: "/images/stormy.jpg", tagline: "Thunder roars ahead ⚡" },
+  "Thunderstorm Night": { image: "/images/stormy_night.jpg", tagline: "Stormy night ⚡🌙" },
+  Mist: { image: "/images/mist.jpg", tagline: "Silent mist flows 🌫️" },
+  "Mist Night": { image: "/images/mist_night.jpg", tagline: "Misty night whispers 🌙🌫️" },
+  Fog: { image: "/images/mist.jpg", tagline: "Fog descends softly 🌫️" },
+  Haze: { image: "/images/mist.jpg", tagline: "Hazy skies around 🌫️" },
+  Smoke: { image: "/images/mist.jpg", tagline: "Smoky atmosphere around 🔥" },
+  Snow: { image: "/images/snowy.jpg", tagline: "Snowy and calm ❄️" },
+  Drizzle: { image: "/images/rainy.jpg", tagline: "Soft drizzle today 🌦️" },
+  Overcast: { image: "/images/cloudy.jpg", tagline: "Grey skies above ☁️" },
+  "Partly Cloudy": { image: "/images/cloudy.jpg", tagline: "Clouds hiding the sun ⛅" },
+  Default: { image: "/images/clear.jpg", tagline: "WeatherScope keeps you prepared 🌍" },
+};
+
+const getRightIcon = (condition) => {
+  const map = {
+    Clear: MdWbSunny,
+    Clouds: MdWbCloudy,
+    Rain: MdCloudQueue,
+    Thunderstorm: MdThunderstorm,
+    Mist: MdGrain,
+    Snow: MdGrain,
+    Default: MdWbSunny,
+  };
+  return map[condition] || map.Default;
+};
+
+// ===========================
+// COMPONENTS
+// ===========================
+const ProfileHeader = ({ user, onLogout }) => {
+  const profileName = user?.name || user?.given_name || "Guest User";
+  const profileImage = user?.picture || "https://i.pravatar.cc/150?img=65";
+
+  return (
+    <div className="absolute top-3 right-3 sm:top-6 sm:right-6 flex items-center gap-2 sm:gap-3 bg-white/10 border border-white/20 backdrop-blur-md rounded-full px-2 py-1 sm:px-3 shadow-lg">
+      <img
+        src={profileImage}
+        alt="Profile"
+        className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-white/40 object-cover"
+      />
+      <div className="hidden md:flex flex-col mr-2">
+        <span className="text-sm font-semibold">{profileName}</span>
+        <span className="text-xs text-white/70">Online</span>
+      </div>
+      <button
+        onClick={onLogout}
+        className="p-2 rounded-full bg-white/90 text-black hover:bg-white transition"
+        aria-label="Logout"
+      >
+        <MdLogout size={20} />
+      </button>
+    </div>
+  );
+};
+
+const HighlightsPanel = ({ weatherData }) => (
+  <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-6 md:p-8 border border-white/20 shadow-2xl flex flex-col justify-end w-full md:w-[55%] h-auto md:h-[55vh] min-h-[400px] md:min-h-0">
+    <h3 className="text-white text-lg sm:text-xl font-normal mb-4 md:mb-6">Highlights</h3>
+    <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
+      <div className="flex flex-col items-center justify-center p-3 sm:p-4 rounded-xl bg-white/5">
+        <SunDim size={24} className="sm:w-7 sm:h-7 mb-2" />
+        <p className="text-2xl sm:text-3xl font-bold">{weatherData?.uv_index ?? "N/A"}</p>
+        <p className="text-xs sm:text-sm text-white/70">UV Index</p>
+      </div>
+      <div className="flex flex-col items-center justify-center p-3 sm:p-4 rounded-xl bg-white/5">
+        <CloudRain size={24} className="sm:w-7 sm:h-7 mb-2" />
+        <p className="text-2xl sm:text-3xl font-bold">
+          {weatherData?.precipitation ?? weatherData?.rain ?? 0}%
+        </p>
+        <p className="text-xs sm:text-sm text-white/70">Precipitation</p>
+      </div>
+      <div className="flex flex-col items-center justify-center p-3 sm:p-4 rounded-xl bg-white/5">
+        <Wind size={24} className="sm:w-7 sm:h-7 mb-2" />
+        <p className="text-2xl sm:text-3xl font-bold">{weatherData?.windSpeed ?? weatherData?.wind ?? "--"} km/h</p>
+        <p className="text-xs sm:text-sm text-white/70">Wind Speed</p>
+      </div>
+      <div className="flex flex-col items-center justify-center p-3 sm:p-4 rounded-xl bg-white/5">
+        <Eye size={24} className="sm:w-7 sm:h-7 mb-2" />
+        <p className="text-2xl sm:text-3xl font-bold">{weatherData?.visibility || "--"} km</p>
+        <p className="text-xs sm:text-sm text-white/70">Visibility</p>
+      </div>
+    </div>
+  </div>
+);
+
+const HourlyForecastCard = ({ hour, selectedHour, setSelectedHour }) => (
+  <div
+    className={`flex-shrink-0 min-w-[120px] bg-white/10 rounded-lg p-3 text-center backdrop-blur-sm border ${
+      selectedHour?.time === hour.time ? "border-yellow-400 bg-white/20" : "border-white/10"
+    } cursor-pointer hover:bg-white/15 transition-all`}
+    onClick={() => setSelectedHour(hour)}
+  >
+    <p className="text-sm text-white/80">{hour.time}</p>
+    <div className="flex items-center justify-center my-2">
+      {hour.icon ? (
+        <img
+          src={`https://openweathermap.org/img/wn/${hour.icon}@2x.png`}
+          alt={hour.condition}
+          className="w-12 h-12"
+          onError={(e) => {
+            e.currentTarget.onerror = null;
+            e.currentTarget.style.display = "none";
+            const fallback = e.currentTarget.nextElementSibling;
+            if (fallback) fallback.classList.remove("hidden");
+          }}
+        />
+      ) : null}
+      <span className={`${hour.icon ? "hidden" : ""} text-white/80`}>
+        <MdWbCloudy size={28} />
+      </span>
+    </div>
+    <p className="text-xl font-semibold">{hour.temp}°C</p>
+    <p className="text-xs text-white/60">{hour.condition}</p>
+  </div>
+);
+
+const MainWeatherPanel = ({ weatherData, keyCondition, tagline, selectedHour, setSelectedHour }) => {
+  const IconComponent = getRightIcon(keyCondition);
+
+  return (
+    <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-6 border border-white/20 flex flex-col items-center w-full md:w-[40%] h-auto md:h-[80vh] min-h-[450px] md:min-h-0 shadow-2xl">
+      <IconComponent size={64} className="sm:w-20 sm:h-20 mb-2 text-yellow-200" />
+      <p className="text-4xl sm:text-5xl font-bold">{weatherData?.temperature || "--"}°C</p>
+      <p className="text-base sm:text-lg text-white/80 mb-6">{weatherData?.condition || "N/A"}</p>
+
+      {/* Map */}
+      <div className="w-full h-32 sm:h-40 rounded-xl overflow-hidden mb-4 sm:mb-6">
+        <iframe
+          title="map"
+          width="100%"
+          height="100%"
+          src={`https://maps.google.com/maps?q=${weatherData?.location || "Delhi"}&z=10&output=embed`}
+        ></iframe>
+      </div>
+
+      {/* Hourly Forecast */}
+      <div className="w-full bg-white/5 rounded-xl p-4 flex flex-col gap-3">
+        <div className="flex items-center justify-between">
+          <p className="text-white/80 text-sm uppercase tracking-wide">Hourly</p>
+          <span className="text-white/60 text-xs">Next 6 hrs</span>
+        </div>
+        <div className="flex gap-3 overflow-x-auto pb-1">
+          {(weatherData?.hourly || []).length ? (
+            weatherData.hourly.map((hour, index) => (
+              <HourlyForecastCard
+                key={`${hour.time}-${index}`}
+                hour={hour}
+                selectedHour={selectedHour}
+                setSelectedHour={setSelectedHour}
+              />
+            ))
+          ) : (
+            <p className="text-white/70 text-sm">Hourly forecast unavailable.</p>
+          )}
+        </div>
+        {selectedHour && (
+          <div className="mt-2 text-center">
+            <button
+              onClick={() => setSelectedHour(null)}
+              className="text-sm text-white/70 hover:text-white underline"
+            >
+              Reset to main forecast
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// ===========================
+// MAIN DASHBOARD
+// ===========================
 const Dashboard = ({ onLogout, user }) => {
   const { state } = useLocation();
   const navigate = useNavigate();
 
   const [weatherData, setWeatherData] = useState(state?.weatherData || null);
   const [selectedHour, setSelectedHour] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [search, setSearch] = useState(state?.weatherData?.location || "");
 
   const displayWeather = selectedHour || weatherData;
 
-  // ===========================
-  // ✅ FETCH LATEST WEATHER
-  // ===========================
-  const fetchWeather = async () => {
-    if (!search) {
-      alert("Please enter a location!");
-      return;
-    }
-
-    try {
-      setLoading(true);
-
-      const response = await fetch(
-        `https://weatherscope-gw2z.onrender.com/api/weather?location=${search}`
-      );
-
-      if (!response.ok) throw new Error("Network response error");
-
-      const data = await response.json();
-      console.log("Fetched Weather:", data);
-
-      setWeatherData(data);
-      setSelectedHour(null);
-    } catch (error) {
-      console.error("Error fetching weather:", error);
-      alert("Unable to fetch weather. Please try again later.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // ===========================
-  // WEATHER VISUALS
-  // ===========================
-  const weatherVisuals = {
-    Clear: { image: "/images/clear.jpg", tagline: "A perfect day to shine bright ☀️" },
-    "Clear Night": { image: "/images/clear_night.jpg", tagline: "Starry skies tonight ✨" },
-    Clouds: { image: "/images/cloudy.jpg", tagline: "Soft clouds drifting ☁️" },
-    "Clouds Night": { image: "/images/cloudy_night.jpg", tagline: "Cloudy night sky 🌙" },
-    Rain: { image: "/images/rainy.jpg", tagline: "Raindrops falling gently 🌧️" },
-    "Rain Night": { image: "/images/rainy_night.jpg", tagline: "Rainy night ambience 🌧️✨" },
-    Thunderstorm: { image: "/images/stormy.jpg", tagline: "Thunder roars ahead ⚡" },
-    "Thunderstorm Night": { image: "/images/stormy_night.jpg", tagline: "Stormy night ⚡🌙" },
-    Mist: { image: "/images/mist.jpg", tagline: "Silent mist flows 🌫️" },
-    "Mist Night": { image: "/images/mist_night.jpg", tagline: "Misty night whispers 🌙🌫️" },
-    Fog: { image: "/images/mist.jpg", tagline: "Fog descends softly 🌫️" },
-    Haze: { image: "/images/mist.jpg", tagline: "Hazy skies around 🌫️" },
-    Smoke: { image: "/images/mist.jpg", tagline: "Smoky atmosphere around 🔥" },
-    Snow: { image: "/images/snowy.jpg", tagline: "Snowy and calm ❄️" },
-    Drizzle: { image: "/images/rainy.jpg", tagline: "Soft drizzle today 🌦️" },
-    Overcast: { image: "/images/cloudy.jpg", tagline: "Grey skies above ☁️" },
-    "Partly Cloudy": { image: "/images/cloudy.jpg", tagline: "Clouds hiding the sun ⛅" },
-    Default: { image: "/images/clear.jpg", tagline: "WeatherScope keeps you prepared 🌍" },
-  };
-
+  // Determine weather visuals
   const rawCondition =
     displayWeather?.condition ||
     displayWeather?.main ||
@@ -86,10 +213,9 @@ const Dashboard = ({ onLogout, user }) => {
     "Clear";
 
   const normalized = rawCondition.toLowerCase();
-  const isNight =
-    displayWeather?.time
-      ? +displayWeather.time.split(":")[0] >= 18 || +displayWeather.time.split(":")[0] < 6
-      : false;
+  const isNight = displayWeather?.time
+    ? +displayWeather.time.split(":")[0] >= 18 || +displayWeather.time.split(":")[0] < 6
+    : false;
 
   let key = "Default";
 
@@ -110,175 +236,66 @@ const Dashboard = ({ onLogout, user }) => {
 
   const { image, tagline } = weatherVisuals[key];
 
-  const profileName = user?.name || user?.given_name || "Guest User";
-  const profileImage = user?.picture || "https://i.pravatar.cc/150?img=65";
-
-  // ICON MAPPER
-  const getRightIcon = (c) => {
-    const map = {
-      Clear: MdWbSunny,
-      Clouds: MdWbCloudy,
-      Rain: MdCloudQueue,
-      Thunderstorm: MdThunderstorm,
-      Mist: MdGrain,
-      Snow: MdGrain,
-      Default: MdWbSunny,
-    };
-    return map[c] || map.Default;
+  const handleLogout = () => {
+    onLogout?.();
+    navigate("/signin");
   };
 
   return (
     <div
-      className="min-h-screen text-white relative font-[Poppins]"
-      style={{
-        backgroundImage: `url('${image}')`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
+      className="min-h-screen text-white relative transition-all duration-700 ease-in-out font-[Poppins]"
+      style={{ backgroundImage: `url('${image}')`, backgroundSize: "cover", backgroundPosition: "center" }}
     >
+      {/* Overlay */}
       <div className="absolute inset-0 bg-black/50"></div>
 
-      <div className="relative z-10 px-6 pt-24 pb-6 md:px-10 flex flex-col min-h-screen">
+      {/* Content */}
+      <div className="relative z-10 px-6 pt-24 pb-6 md:px-10 md:pt-12 md:pb-10 flex flex-col min-h-screen">
         {/* Back Button */}
-        <Link to="/checkforecast" className="absolute top-6 left-6 text-white/80">
+        <Link to="/checkforecast" className="absolute top-6 left-6 text-white/80 hover:text-white">
           <MdArrowBack size={30} />
         </Link>
 
-        {/* Profile */}
-        <div className="absolute top-4 right-4 bg-white/10 border border-white/20 rounded-full px-3 py-1 flex items-center gap-3">
-          <img
-            src={profileImage}
-            className="w-10 h-10 rounded-full border border-white/30"
-          />
-          <span className="hidden md:block text-sm">{profileName}</span>
-          <button
-            onClick={() => {
-              onLogout();
-              navigate("/signin");
-            }}
-            className="p-2 bg-white text-black rounded-full"
-          >
-            <MdLogout size={18} />
-          </button>
+        {/* Profile Header */}
+        <ProfileHeader user={user} onLogout={handleLogout} />
+
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl md:text-5xl font-bold">WeatherScope</h1>
+          <p className="text-white/80 mt-2">Get detailed information for your event.</p>
+          <p className="mt-3 text-lg font-medium">
+            {weatherData?.location || "Loading..."}{" "}
+            <span className="text-white/60">
+              • {weatherData?.date || new Date().toLocaleDateString()} at{" "}
+              {weatherData?.time ||
+                new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+            </span>
+          </p>
         </div>
 
-        {/* Search Box */}
-        <div className="text-center mt-4 mb-6">
-          <input
-            type="text"
-            placeholder="Search location..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="px-4 py-2 rounded-xl bg-white/20 backdrop-blur text-white border border-white/30 w-64"
-          />
-          <button
-            onClick={fetchWeather}
-            className="ml-3 px-4 py-2 bg-yellow-500 text-black rounded-xl"
-          >
-            Search
-          </button>
+        {/* Tagline (mobile) */}
+        <div className="md:hidden text-center mb-6">
+          <h2 className="text-3xl font-extrabold drop-shadow-lg leading-snug">{tagline}</h2>
         </div>
 
-        {/* Weather Info */}
-        <div className="text-center mb-6">
-          <h1 className="text-5xl font-bold">WeatherScope</h1>
-          <p className="text-white/80 mt-2">{tagline}</p>
-        </div>
-
-        {/* MAIN CONTAINER */}
-        <div className="flex flex-col md:flex-row gap-4 flex-1">
-          {/* LEFT PANEL */}
-          <div className="bg-white/10 p-6 rounded-2xl w-full md:w-1/2 border border-white/20">
-            <h3 className="text-xl mb-4">Highlights</h3>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-white/10 p-4 rounded-xl text-center">
-                <SunDim size={30} />
-                <p className="text-3xl font-bold">{weatherData?.uv_index ?? "N/A"}</p>
-                <p className="text-sm text-white/70">UV Index</p>
-              </div>
-
-              <div className="bg-white/10 p-4 rounded-xl text-center">
-                <CloudRain size={30} />
-                <p className="text-3xl font-bold">
-                  {weatherData?.precipitation ?? weatherData?.rain ?? 0}%
-                </p>
-                <p className="text-sm text-white/70">Precipitation</p>
-              </div>
-
-              <div className="bg-white/10 p-4 rounded-xl text-center">
-                <Wind size={30} />
-                <p className="text-3xl font-bold">
-                  {weatherData?.windSpeed ?? weatherData?.wind ?? "--"} km/h
-                </p>
-                <p className="text-sm text-white/70">Wind</p>
-              </div>
-
-              <div className="bg-white/10 p-4 rounded-xl text-center">
-                <Eye size={30} />
-                <p className="text-3xl font-bold">{weatherData?.visibility ?? "--"} km</p>
-                <p className="text-sm text-white/70">Visibility</p>
-              </div>
-            </div>
+        {/* Main Panels */}
+        <div className="relative flex flex-col md:flex-row gap-4 flex-1 items-end max-w-7xl mx-auto w-full md:justify-center md:pt-16">
+          {/* Tagline (desktop) */}
+          <div className="hidden md:block absolute top-4 left-[30%] -translate-x-1/2 text-left max-w-xl px-4">
+            <h2 className="text-4xl md:text-5xl font-extrabold drop-shadow-lg leading-snug">{tagline}</h2>
           </div>
 
-          {/* RIGHT PANEL */}
-          <div className="bg-white/10 p-6 rounded-2xl w-full md:w-1/2 border border-white/20 text-center">
-            {React.createElement(getRightIcon(key), {
-              size: 60,
-              className: "mb-3 text-yellow-300",
-            })}
+          {/* Left Rectangle */}
+          <HighlightsPanel weatherData={weatherData} />
 
-            <p className="text-5xl font-bold">{weatherData?.temperature ?? "--"}°C</p>
-            <p className="text-lg text-white/70 mt-2">{rawCondition}</p>
-
-            {/* MAP */}
-            <div className="mt-4 rounded-xl overflow-hidden h-40">
-              <iframe
-                title="map"
-                width="100%"
-                height="100%"
-                src={`https://maps.google.com/maps?q=${
-                  weatherData?.location || search
-                }&z=10&output=embed`}
-              ></iframe>
-            </div>
-
-            {/* HOURLY FORECAST */}
-            <div className="mt-5">
-              <h4 className="text-white/80 mb-2">Next 6 Hours</h4>
-              <div className="flex gap-3 overflow-x-scroll pb-2">
-                {(weatherData?.hourly || []).map((hour, i) => (
-                  <div
-                    key={i}
-                    onClick={() => setSelectedHour(hour)}
-                    className={`min-w-[120px] bg-white/10 p-3 rounded-xl border ${
-                      selectedHour?.time === hour.time
-                        ? "border-yellow-400 bg-white/20"
-                        : "border-white/20"
-                    } cursor-pointer`}
-                  >
-                    <p className="text-sm">{hour.time}</p>
-                    <img
-                      src={`https://openweathermap.org/img/wn/${hour.icon}@2x.png`}
-                      className="w-12 mx-auto"
-                    />
-                    <p className="text-xl font-bold">{hour.temp}°C</p>
-                    <p className="text-xs text-white/60">{hour.condition}</p>
-                  </div>
-                ))}
-              </div>
-
-              {selectedHour && (
-                <button
-                  onClick={() => setSelectedHour(null)}
-                  className="mt-3 text-sm underline"
-                >
-                  Reset to main forecast
-                </button>
-              )}
-            </div>
-          </div>
+          {/* Right Rectangle */}
+          <MainWeatherPanel
+            weatherData={weatherData}
+            keyCondition={key}
+            tagline={tagline}
+            selectedHour={selectedHour}
+            setSelectedHour={setSelectedHour}
+          />
         </div>
       </div>
     </div>
