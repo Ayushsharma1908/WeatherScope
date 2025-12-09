@@ -19,13 +19,14 @@ const Dashboard = ({ onLogout, user }) => {
   const [selectedHour, setSelectedHour] = useState(null);
 
   const displayWeather = selectedHour || weatherData;
+const API_URL = "https://weatherscope-gw2z.onrender.com/api/weather";
 
   // 🔥 Fetch weather data with date/time parameters
   useEffect(() => {
     if (!weatherData && state?.location) {
       const fetchWeather = async () => {
         try {
-          const url = `https://weatherscope-gw2z.onrender.com/api/weather?location=${state.location}${
+          const url = `${API_URL}?location=${state.location}${
             state.date ? `&date=${state.date}` : ''
           }${state.time ? `&time=${state.time}` : ''}`;
           
