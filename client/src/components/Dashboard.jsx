@@ -19,17 +19,18 @@ const Dashboard = ({ onLogout, user }) => {
   const [selectedHour, setSelectedHour] = useState(null);
 
   const displayWeather = selectedHour || weatherData;
-const API_URL = "https://weatherscope-gw2z.onrender.com/api/weather";
+  const API_URL = "https://weatherscope-gw2z.onrender.com/api/weather";
 
   // 🔥 Fetch weather data with date/time parameters
   useEffect(() => {
-    if (!weatherData && state?.location) {
+    const location = state?.location || "Delhi"; // fallback
+    if (!weatherData) {
       const fetchWeather = async () => {
         try {
-          const url = `${API_URL}?location=${state.location}${
-            state.date ? `&date=${state.date}` : ''
-          }${state.time ? `&time=${state.time}` : ''}`;
-          
+          const url = `${API_URL}?location=${location}${
+            state.date ? `&date=${state.date}` : ""
+          }${state.time ? `&time=${state.time}` : ""}`;
+
           const res = await fetch(url);
           const data = await res.json();
           setWeatherData(data);
@@ -43,74 +44,74 @@ const API_URL = "https://weatherscope-gw2z.onrender.com/api/weather";
 
   // 🌤️ Weather visuals
   const weatherVisuals = {
-     Clear: {
-    image: "/images/clear.jpg",
-    tagline: "A perfect day to shine bright ☀️",
-  },
-  'Clear Night': {
-    image: "/images/clear_night.jpg",
-    tagline: "Starry skies and peaceful nights ✨",
-  },
-  Clouds: {
-    image: "/images/cloudy.jpg",
-    tagline: "Under the soft dance of clouds ☁️",
-  },
-  'Clouds Night': {
-    image: "/images/cloudy_night.jpg",
-    tagline: "Night clouds painting the sky 🌙☁️",
-  },
-  Rain: {
-    image: "/images/rainy.jpg",
-    tagline: "Let the raindrops tell their story 🌧️",
-  },
-  'Rain Night': {
-    image: "/images/rainy_night.jpg",
-    tagline: "Rainy nights and cozy lights 🌧️✨",
-  },
-  Thunderstorm: {
-    image: "/images/stormy.jpg",
-    tagline: "A storm is on its way. Stay prepared 🌪️",
-  },
-  'Thunderstorm Night': {
-    image: "/images/stormy_night.jpg",
-    tagline: "Lightning dances across the night sky ⚡🌙",
-  },
-  Mist: {
-    image: "/images/mist.jpg",
-    tagline: "Calm skies and quiet winds 🌫️",
-  },
-  'Mist Night': {
-    image: "/images/mist_night.jpg",
-    tagline: "Mysterious nights under misty skies 🌙🌫️",
-  },
-  Fog: {
-    image: "/images/mist.jpg",
-    tagline: "Foggy horizons and soft whispers 🌁",
-  },
-  Haze: {
-    image: "/images/mist.jpg",
-    tagline: "Hazy views and gentle breezes 🌫️",
-  },
-  Smoke: {
-    image: "/images/mist.jpg",
-    tagline: "Smoky skies and warm glows 🌫️🔥",
-  },
-  Snow: {
-    image: "/images/snowy.jpg",
-    tagline: "Winter's gentle touch ❄️",
-  },
-  Drizzle: {
-    image: "/images/rainy.jpg",
-    tagline: "Soft drizzles and fresh air 🌦️",
-  },
-  Overcast: {
-    image: "/images/cloudy.jpg",
-    tagline: "Gray skies but bright spirits ☁️",
-  },
-  'Partly Cloudy': {
-    image: "/images/cloudy.jpg",
-    tagline: "Sun playing hide and seek with clouds ⛅",
-  },
+    Clear: {
+      image: "/images/clear.jpg",
+      tagline: "A perfect day to shine bright ☀️",
+    },
+    "Clear Night": {
+      image: "/images/clear_night.jpg",
+      tagline: "Starry skies and peaceful nights ✨",
+    },
+    Clouds: {
+      image: "/images/cloudy.jpg",
+      tagline: "Under the soft dance of clouds ☁️",
+    },
+    "Clouds Night": {
+      image: "/images/cloudy_night.jpg",
+      tagline: "Night clouds painting the sky 🌙☁️",
+    },
+    Rain: {
+      image: "/images/rainy.jpg",
+      tagline: "Let the raindrops tell their story 🌧️",
+    },
+    "Rain Night": {
+      image: "/images/rainy_night.jpg",
+      tagline: "Rainy nights and cozy lights 🌧️✨",
+    },
+    Thunderstorm: {
+      image: "/images/stormy.jpg",
+      tagline: "A storm is on its way. Stay prepared 🌪️",
+    },
+    "Thunderstorm Night": {
+      image: "/images/stormy_night.jpg",
+      tagline: "Lightning dances across the night sky ⚡🌙",
+    },
+    Mist: {
+      image: "/images/mist.jpg",
+      tagline: "Calm skies and quiet winds 🌫️",
+    },
+    "Mist Night": {
+      image: "/images/mist_night.jpg",
+      tagline: "Mysterious nights under misty skies 🌙🌫️",
+    },
+    Fog: {
+      image: "/images/mist.jpg",
+      tagline: "Foggy horizons and soft whispers 🌁",
+    },
+    Haze: {
+      image: "/images/mist.jpg",
+      tagline: "Hazy views and gentle breezes 🌫️",
+    },
+    Smoke: {
+      image: "/images/mist.jpg",
+      tagline: "Smoky skies and warm glows 🌫️🔥",
+    },
+    Snow: {
+      image: "/images/snowy.jpg",
+      tagline: "Winter's gentle touch ❄️",
+    },
+    Drizzle: {
+      image: "/images/rainy.jpg",
+      tagline: "Soft drizzles and fresh air 🌦️",
+    },
+    Overcast: {
+      image: "/images/cloudy.jpg",
+      tagline: "Gray skies but bright spirits ☁️",
+    },
+    "Partly Cloudy": {
+      image: "/images/cloudy.jpg",
+      tagline: "Sun playing hide and seek with clouds ⛅",
+    },
     Default: {
       image: "/images/clear.jpg",
       tagline: "Embrace the weather, whatever it brings 🌎",
@@ -118,80 +119,104 @@ const API_URL = "https://weatherscope-gw2z.onrender.com/api/weather";
   };
 
   const rawCondition =
-  displayWeather?.condition ||
-  displayWeather?.main ||
-  displayWeather?.weather?.[0]?.main ||
-  displayWeather?.weather?.[0]?.description ||
-  "Clear";
+    displayWeather?.condition ||
+    displayWeather?.main ||
+    displayWeather?.weather?.[0]?.main ||
+    displayWeather?.weather?.[0]?.description ||
+    "Clear";
 
-const normalized = rawCondition.toLowerCase();
-const isNight = displayWeather?.time ? 
-  (parseInt(displayWeather.time.split(':')[0]) >= 18 || parseInt(displayWeather.time.split(':')[0]) < 6) : 
-  false;
+  const normalized = rawCondition.toLowerCase();
+  const isNight = displayWeather?.time
+    ? parseInt(displayWeather.time.split(":")[0]) >= 18 ||
+      parseInt(displayWeather.time.split(":")[0]) < 6
+    : false;
 
-let key = "Default";
+  let key = "Default";
 
-// Check for night conditions first
-if (isNight) {
-  if (normalized.includes("clear")) key = "Clear Night";
-  else if (normalized.includes("cloud")) key = "Clouds Night";
-  else if (normalized.includes("rain")) key = "Rain Night";
-  else if (normalized.includes("storm") || normalized.includes("thunder")) key = "Thunderstorm Night";
-  else if (normalized.includes("mist") || normalized.includes("fog") || normalized.includes("haze") || normalized.includes("smoke")) 
-    key = "Mist Night";
-} else {
-  // Daytime conditions
-  if (normalized.includes("clear")) key = "Clear";
-  else if (normalized.includes("cloud")) key = "Clouds";
-  else if (normalized.includes("rain") || normalized.includes("drizzle")) key = "Rain";
-  else if (normalized.includes("storm") || normalized.includes("thunder")) key = "Thunderstorm";
-  else if (normalized.includes("mist") || normalized.includes("fog") || normalized.includes("haze") || normalized.includes("smoke")) 
-    key = "Mist";
-  else if (normalized.includes("snow")) key = "Snow";
-  else if (normalized.includes("overcast")) key = "Overcast";
-  else if (normalized.includes("partly")) key = "Partly Cloudy";
-}
+  // Check for night conditions first
+  if (isNight) {
+    if (normalized.includes("clear")) key = "Clear Night";
+    else if (normalized.includes("cloud")) key = "Clouds Night";
+    else if (normalized.includes("rain")) key = "Rain Night";
+    else if (normalized.includes("storm") || normalized.includes("thunder"))
+      key = "Thunderstorm Night";
+    else if (
+      normalized.includes("mist") ||
+      normalized.includes("fog") ||
+      normalized.includes("haze") ||
+      normalized.includes("smoke")
+    )
+      key = "Mist Night";
+  } else {
+    // Daytime conditions
+    if (normalized.includes("clear")) key = "Clear";
+    else if (normalized.includes("cloud")) key = "Clouds";
+    else if (normalized.includes("rain") || normalized.includes("drizzle"))
+      key = "Rain";
+    else if (normalized.includes("storm") || normalized.includes("thunder"))
+      key = "Thunderstorm";
+    else if (
+      normalized.includes("mist") ||
+      normalized.includes("fog") ||
+      normalized.includes("haze") ||
+      normalized.includes("smoke")
+    )
+      key = "Mist";
+    else if (normalized.includes("snow")) key = "Snow";
+    else if (normalized.includes("overcast")) key = "Overcast";
+    else if (normalized.includes("partly")) key = "Partly Cloudy";
+  }
 
-// If it's night but we have a specific condition that doesn't have a night version
-if (isNight && !key.includes("Night") && !["Clear Night", "Clouds Night", "Rain Night", "Thunderstorm Night", "Mist Night"].includes(key)) {
-  // Use default night for unsupported night conditions
-  key = "Clear Night";
-}
+  // If it's night but we have a specific condition that doesn't have a night version
+  if (
+    isNight &&
+    !key.includes("Night") &&
+    ![
+      "Clear Night",
+      "Clouds Night",
+      "Rain Night",
+      "Thunderstorm Night",
+      "Mist Night",
+    ].includes(key)
+  ) {
+    // Use default night for unsupported night conditions
+    key = "Clear Night";
+  }
 
-const { image, tagline } = weatherVisuals[key];
-const condition = rawCondition;
+  const { image, tagline } = weatherVisuals[key];
+  const condition = rawCondition;
 
   const profileName = user?.name || user?.given_name || "Guest User";
   const profileImage = user?.picture || "https://i.pravatar.cc/150?img=65";
 
   function getRightIcon(conditionKey) {
-  const icons = {
-    // Daytime icons
-    Clear: MdWbSunny,
-    Clouds: MdWbCloudy,
-    Rain: MdCloudQueue,
-    Thunderstorm: MdThunderstorm,
-    Mist: MdGrain,
-    Fog: MdGrain,
-    Haze: MdGrain,
-    Smoke: MdGrain,
-    Snow: MdGrain,
-    Drizzle: MdCloudQueue,
-    Overcast: MdWbCloudy,
-    'Partly Cloudy': MdWbCloudy,
-    
-    // Nighttime icons
-    'Clear Night': MdWbSunny, // Consider using: <MdNightlightRound size={64} />
-    'Clouds Night': MdWbCloudy,
-    'Rain Night': MdCloudQueue,
-    'Thunderstorm Night': MdThunderstorm,
-    'Mist Night': MdGrain,
-    
-    Default: MdWbSunny,
-  };
+    const icons = {
+      // Daytime icons
+      Clear: MdWbSunny,
+      Clouds: MdWbCloudy,
+      Rain: MdCloudQueue,
+      Thunderstorm: MdThunderstorm,
+      Mist: MdGrain,
+      Fog: MdGrain,
+      Haze: MdGrain,
+      Smoke: MdGrain,
+      Snow: MdGrain,
+      Drizzle: MdCloudQueue,
+      Overcast: MdWbCloudy,
+      "Partly Cloudy": MdWbCloudy,
 
-  return icons[conditionKey] || icons.Default;
-}
+      // Nighttime icons
+      "Clear Night": MdWbSunny, // Consider using: <MdNightlightRound size={64} />
+      "Clouds Night": MdWbCloudy,
+      "Rain Night": MdCloudQueue,
+      "Thunderstorm Night": MdThunderstorm,
+      "Mist Night": MdGrain,
+
+      Default: MdWbSunny,
+    };
+
+    return icons[conditionKey] || icons.Default;
+  }
   const handleLogout = () => {
     onLogout();
     navigate("/signin", { replace: true });
@@ -250,10 +275,11 @@ const condition = rawCondition;
             {weatherData?.location || "Loading..."}{" "}
             <span className="text-white/60">
               • {weatherData?.date || new Date().toLocaleDateString()} at{" "}
-              {weatherData?.time || new Date().toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
+              {weatherData?.time ||
+                new Date().toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
             </span>
           </p>
         </div>
@@ -273,7 +299,7 @@ const condition = rawCondition;
               {tagline}
             </h2>
           </div>
-          
+
           {/* Left Rectangle */}
           <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-6 md:p-8 border border-white/20 shadow-2xl flex flex-col justify-end w-full md:w-[55%] h-auto md:h-[55vh] min-h-[400px] md:min-h-0">
             <h3 className="text-white text-lg sm:text-xl font-normal mb-4 md:mb-6">
@@ -353,8 +379,8 @@ const condition = rawCondition;
                     <div
                       key={`${hour.time}-${index}`}
                       className={`flex-shrink-0 min-w-[120px] bg-white/10 rounded-lg p-3 text-center backdrop-blur-sm border ${
-                        selectedHour?.time === hour.time 
-                          ? "border-yellow-400 bg-white/20" 
+                        selectedHour?.time === hour.time
+                          ? "border-yellow-400 bg-white/20"
                           : "border-white/10"
                       } cursor-pointer hover:bg-white/15 transition-all`}
                       onClick={() => setSelectedHour(hour)}
@@ -369,7 +395,8 @@ const condition = rawCondition;
                             onError={(e) => {
                               e.currentTarget.onerror = null;
                               e.currentTarget.style.display = "none";
-                              const fallback = e.currentTarget.nextElementSibling;
+                              const fallback =
+                                e.currentTarget.nextElementSibling;
                               if (fallback) fallback.classList.remove("hidden");
                             }}
                           />
