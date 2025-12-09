@@ -10,7 +10,7 @@ import {
   MdLogout,
   MdWbCloudy as MdCloudy,
 } from "react-icons/md";
-import { Droplets, Wind, Eye, CloudRain, SunDim } from "lucide-react";
+import {Wind, Eye, CloudRain, SunDim } from "lucide-react";
 
 const Dashboard = ({ onLogout, user }) => {
   const { state } = useLocation();
