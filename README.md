@@ -1,17 +1,152 @@
-<<<<<<< HEAD
-# React + Vite
+🌤️ WEATHERCODE
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern full-stack weather application built using React + Vite on the frontend and Node.js + Express on the backend.
+The app provides real-time weather updates, hourly forecast, location search, and a clean beautiful UI.
 
-Currently, two official plugins are available:
+📁 Project Structure
+WEATHERCODE/
+│
+├── client/               # Frontend (React + Vite)
+│   ├── src/
+│   │   ├── components/
+│   │   ├── App.jsx
+│   │   └── ...
+│   ├── public/
+│   ├── package.json
+│   └── vite.config.js
+│
+├── server/               # Backend (Node.js + Express)
+│   ├── api/
+│   │   └── weather.js
+│   ├── server.js
+│   ├── package.json
+│   └── .env (ignored)
+│
+├── .gitignore
+└── README.md
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+✨ Features
+🌦️ Weather Dashboard
 
-## Expanding the ESLint configuration
+Displays temperature, humidity, wind speed, visibility
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-=======
-# WeatherScope
-WEATHERCODE is a full-stack weather app built using React + Vite (frontend) and Node.js + Express (backend). It provides real-time weather, hourly forecasts, dynamic UI based on conditions, and secure API handling through a dedicated server.
->>>>>>> 94b8ec6c7ea213b17f490c2b169a227071933cd8
+Changes UI based on weather condition
+
+Clean and minimal design
+
+🕒 Hourly Forecast
+
+Detailed hourly weather updates
+
+Scrollable forecast section
+
+🔍 Location Search
+
+Search any city globally
+
+Fetches weather instantly using backend API
+
+⚙️ Full-stack Setup
+
+Separate client and server folders
+
+Backend handles weather API securely
+
+Frontend uses Axios + Context for state
+
+🛠️ Tech Stack :
+Frontend - 
+
+React (Vite)
+
+JavaScript (ES6+)
+
+Tailwind CSS
+
+Context API
+
+Axios
+
+Backend -
+
+Node.js
+
+Express.js
+
+Weather API (OpenWeather)
+
+dotenv
+
+🚀 Getting Started
+1️⃣ Clone the Repository
+git clone https://github.com/<your-username>/WEATHERCODE.git
+cd WEATHERCODE
+
+📦 Install Dependencies
+🔹 Client
+cd client
+npm install
+
+🔹 Server
+cd ../server
+npm install
+
+⚙️ Environment Variables
+
+Create a .env file inside server/:
+
+API_KEY=your_weather_api_key
+PORT=5000
+
+▶️ Run the App
+Backend:
+cd server
+npm run dev
+
+Frontend:
+cd client
+nodemon server.js
+
+
+Frontend runs at →
+http://localhost:5173/
+
+Backend runs at →
+http://localhost:5000/
+
+📡 API Endpoint
+GET /api/weather?city=<cityname>
+
+Returns:
+
+temperature
+
+humidity
+
+wind
+
+visibility
+
+weather condition
+
+etc.
+
+🧩 Git Ignore Rules
+
+Your .gitignore excludes:
+
+client/node_modules/
+client/dist/
+client/.env
+server/node_modules/
+server/.env
+
+🤝 Contributing
+
+Pull requests are welcome!
+Feel free to fork and improve the UI, add features, or optimize the backend.
+
+🧑‍💻 Author
+
+Ayush Kumar
+Developer — Full Stack (React + Node.js)
