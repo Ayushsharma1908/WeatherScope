@@ -25,7 +25,7 @@ const Dashboard = ({ onLogout, user }) => {
     if (!weatherData && state?.location) {
       const fetchWeather = async () => {
         try {
-          const url = `http://localhost:5000/api/weather?location=${state.location}${
+          const url = `https://weatherscope-gw2z.onrender.com/api/weather?location=${state.location}${
             state.date ? `&date=${state.date}` : ''
           }${state.time ? `&time=${state.time}` : ''}`;
           
