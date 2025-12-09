@@ -22,27 +22,33 @@ const Dashboard = ({ onLogout, user }) => {
   const API_URL = "https://weatherscope-gw2z.onrender.com/api/weather";
 
   // 🔥 Fetch weather data with date/time parameters
-  useEffect(() => {
+ useEffect(() => {
   const fetchWeather = async () => {
     try {
-      const location = state?.location || "Delhi"; // fallback
+      const location = state?.location || "Delhi";
       const date = state?.date ? `&date=${state.date}` : "";
       const time = state?.time ? `&time=${state.time}` : "";
       const url = `${API_URL}?location=${location}${date}${time}`;
       console.log("Fetching weather from:", url);
 
       const res = await fetch(url);
-      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+      if (!res.ok) {
+        console.error("HTTP error!", res.status, await res.text());
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
       const data = await res.json();
       console.log("Weather data:", data);
       setWeatherData(data);
     } catch (err) {
       console.error("Error fetching weather:", err);
+      setWeatherData(null); // clear any old data
     }
   };
 
-  fetchWeather(); // run once
-}, [state]); // only re-run if state changes
+  fetchWeather();
+}, [state]);
+ // only re-run if state changes
 
 
   // 🌤️ Weather visuals
