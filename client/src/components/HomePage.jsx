@@ -40,7 +40,7 @@ useEffect(() => {
 if (!weatherData && state?.location) {
 const fetchWeather = async () => {
 try {
-const res = await fetch(`http://localhost:5000/api/weather?location=${state.location}`);
+const res = await fetch(`https://weatherscope-gw2z.onrender.com/api/weather?location=${state.location}`);
 const data = await res.json();
 setWeatherData(data);
 } catch (err) {
