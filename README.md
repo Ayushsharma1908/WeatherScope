@@ -79,7 +79,7 @@ dotenv
 
 🚀 Getting Started
 1️⃣ Clone the Repository
-git clone https://github.com/<your-username>/WEATHERCODE.git
+git clone https://github.com/Ayushsharma1908/WEATHERCODE.git
 cd WEATHERCODE
 
 📦 Install Dependencies
@@ -148,5 +148,5 @@ Feel free to fork and improve the UI, add features, or optimize the backend.
 
 🧑‍💻 Author
 
-Ayush Kumar
+Ayush Kumar Sharma
 Developer — Full Stack (React + Node.js)
