@@ -10,7 +10,7 @@ import {
   MdLogout,
   MdWbCloudy as MdCloudy,
 } from "react-icons/md";
-import { Droplets, Wind, Eye, CloudRain } from "lucide-react";
+import { Droplets, Wind, Eye, CloudRain, SunDim } from "lucide-react";
 
 const Dashboard = ({ onLogout, user }) => {
   const { state } = useLocation();
@@ -19,28 +19,31 @@ const Dashboard = ({ onLogout, user }) => {
   const [selectedHour, setSelectedHour] = useState(null);
 
   const displayWeather = selectedHour || weatherData;
-  const API_URL = "https://weatherscope-gw2z.onrender.com/api/weather";
+  const API_URL = "http://localhost:5000/api/weather";
 
   // 🔥 Fetch weather data with date/time parameters
   useEffect(() => {
-    const location = state?.location || "Delhi"; // fallback
-    if (!weatherData) {
-      const fetchWeather = async () => {
-        try {
-          const url = `${API_URL}?location=${location}${
-            state.date ? `&date=${state.date}` : ""
-          }${state.time ? `&time=${state.time}` : ""}`;
+  const fetchWeather = async () => {
+    try {
+      const location = state?.location || "Delhi"; // fallback
+      const date = state?.date ? `&date=${state.date}` : "";
+      const time = state?.time ? `&time=${state.time}` : "";
+      const url = `${API_URL}?location=${location}${date}${time}`;
+      console.log("Fetching weather from:", url);
 
-          const res = await fetch(url);
-          const data = await res.json();
-          setWeatherData(data);
-        } catch (err) {
-          console.error("Error fetching weather:", err);
-        }
-      };
-      fetchWeather();
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+      const data = await res.json();
+      console.log("Weather data:", data);
+      setWeatherData(data);
+    } catch (err) {
+      console.error("Error fetching weather:", err);
     }
-  }, [weatherData, state]);
+  };
+
+  fetchWeather(); // run once
+}, [state]); // only re-run if state changes
+
 
   // 🌤️ Weather visuals
   const weatherVisuals = {
@@ -307,11 +310,11 @@ const Dashboard = ({ onLogout, user }) => {
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
               <div className="flex flex-col items-center justify-center p-3 sm:p-4 rounded-xl bg-white/5">
-                <Droplets size={24} className="sm:w-7 sm:h-7 mb-2" />
+                <SunDim size={24} className="sm:w-7 sm:h-7 mb-2" />
                 <p className="text-2xl sm:text-3xl font-bold">
-                  {weatherData?.humidity || "--"}%
+                  {weatherData?.uv_index ?? "N/A"}
                 </p>
-                <p className="text-xs sm:text-sm text-white/70">Humidity</p>
+                <p className="text-xs sm:text-sm text-white/70">UV Index</p>
               </div>
               <div className="flex flex-col items-center justify-center p-3 sm:p-4 rounded-xl bg-white/5">
                 <CloudRain size={24} className="sm:w-7 sm:h-7 mb-2" />
