@@ -22,7 +22,7 @@ const CheckForecast = () => {
 
     try {
       const response = await fetch(
-        `https://lweatherscope-gw2z.onrender.com/api/weather?location=${encodeURIComponent(
+        `https://weatherscope-gw2z.onrender.com/api/weather?location=${encodeURIComponent(
           formData.location
         )}&date=${formData.date}&time=${formData.time}`
       );
