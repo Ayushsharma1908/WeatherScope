@@ -29,7 +29,7 @@ function App() {
   };
 
   return (
-    <GoogleOAuthProvider clientId="831965582475-nc5vpc6cc65ibfe0iur3e7vfa3ufje7i.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <Router>
         <Routes>
           {/* Landing Page */}

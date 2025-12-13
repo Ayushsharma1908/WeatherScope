@@ -89,13 +89,24 @@ const getRightIcon = (condition = "") => {
 // ===========================
 const ProfileHeader = ({ user, onLogout }) => {
   const profileName = user?.name || user?.given_name || "Guest User";
-  const profileImage = user?.picture || "https://i.pravatar.cc/150?img=65";
+
+  const profileImage =
+    user?.picture ||
+    user?.photoURL ||
+    user?.image ||
+    user?.avatar ||
+    "https://i.pravatar.cc/150?img=65";
 
   return (
     <div className="absolute top-3 right-3 sm:top-6 sm:right-6 flex items-center gap-2 sm:gap-3 bg-white/10 border border-white/20 backdrop-blur-md rounded-full px-2 py-1 sm:px-3 shadow-lg">
       <img
         src={profileImage}
         alt="Profile"
+        referrerPolicy="no-referrer"
+        onError={(e) => {
+          e.currentTarget.onerror = null;
+          e.currentTarget.src = "https://i.pravatar.cc/150?img=65";
+        }}
         className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-white/40 object-cover"
       />
       <div className="hidden md:flex flex-col mr-2">
@@ -105,13 +116,13 @@ const ProfileHeader = ({ user, onLogout }) => {
       <button
         onClick={onLogout}
         className="p-2 rounded-full bg-white/90 text-black hover:bg-white transition"
-        aria-label="Logout"
       >
         <MdLogout size={20} />
       </button>
     </div>
   );
 };
+
 
 const HighlightsPanel = ({ weatherData }) => (
   <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-6 md:p-8 border border-white/20 shadow-2xl flex flex-col justify-end w-full md:w-[55%] h-auto md:h-[55vh] min-h-[400px] md:min-h-0">
