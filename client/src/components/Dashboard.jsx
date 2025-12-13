@@ -8,8 +8,8 @@ import {
   MdThunderstorm,
   MdArrowBack,
   MdLogout,
-  BsMoon
 } from "react-icons/md";
+import { BsMoon } from "react-icons/bs";
 import { Wind, Eye, CloudRain, SunDim } from "lucide-react";
 
 // ===========================
@@ -63,9 +63,10 @@ const weatherVisuals = {
   },
 };
 
-const getRightIcon = (condition = "") => {
+const getRightIcon = (condition = "", isNight = false) => {
   const normalized = condition.toLowerCase();
 
+  if (normalized.includes("clear") && isNight) return BsMoon;
   if (normalized.includes("clear")) return MdWbSunny;
   if (normalized.includes("cloud") || normalized.includes("overcast"))
     return MdWbCloudy;
@@ -202,6 +203,7 @@ const MainWeatherPanel = ({
   tagline,
   selectedHour,
   setSelectedHour,
+  isNight,
 }) => {
   const IconComponent = getRightIcon(keyCondition, isNight);
   
