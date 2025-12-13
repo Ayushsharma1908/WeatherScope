@@ -74,5 +74,7 @@ function App() {
     </GoogleOAuthProvider>
   );
 }
+console.log("GOOGLE CLIENT ID:", import.meta.env.VITE_GOOGLE_CLIENT_ID);
+
 
 export default App;
