@@ -8,6 +8,7 @@ import {
   MdThunderstorm,
   MdArrowBack,
   MdLogout,
+  BsMoon
 } from "react-icons/md";
 import { Wind, Eye, CloudRain, SunDim } from "lucide-react";
 
@@ -81,7 +82,7 @@ const getRightIcon = (condition = "") => {
     return MdGrain;
   if (normalized.includes("snow")) return MdGrain;
 
-  return MdWbSunny;
+  return isNight ? BsMoon : MdWbSunny;
 };
 
 // ===========================
@@ -202,7 +203,8 @@ const MainWeatherPanel = ({
   selectedHour,
   setSelectedHour,
 }) => {
-  const IconComponent = getRightIcon(keyCondition);
+  const IconComponent = getRightIcon(keyCondition, isNight);
+  
 
   return (
     <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-6 border border-white/20 flex flex-col items-center w-full md:w-[40%] h-auto md:h-[80vh] min-h-[450px] md:min-h-0 shadow-2xl">
@@ -390,6 +392,7 @@ const Dashboard = ({ onLogout, user }) => {
             tagline={tagline}
             selectedHour={selectedHour}
             setSelectedHour={setSelectedHour}
+            isNight={isNight}
           />
         </div>
       </div>
