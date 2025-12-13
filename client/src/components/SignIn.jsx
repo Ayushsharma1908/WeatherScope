@@ -188,8 +188,7 @@ const SignIn = ({ onLogin }) => {
                   <button
                     onClick={renderProps.onClick}
                     disabled={renderProps.disabled}
-                    className="w-full bg-[#F3F9FA] text-[#162D3A] py-4 rounded-xl font-semibold text-lg shadow-md hover:bg-[#E8F4F8] transition-colors duration-200 flex items-center justify-center gap-3 h-[80px]"
-                    style={{ minHeight: "60px" }}
+                    className="w-full bg-[#F3F9FA] text-[#162D3A] py-4 rounded-xl font-semibold text-lg shadow-md hover:bg-[#E8F4F8] transition-colors duration-200 flex items-center justify-center gap-3"
                   >
                     {/* Google Icon */}
                     <img
